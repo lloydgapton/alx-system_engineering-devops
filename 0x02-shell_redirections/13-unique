@@ -1,0 +1,2 @@
+#!/bin/bash
+grep -o -w -F -f <(sort file.txt) file.txt | sort | uniq -u
