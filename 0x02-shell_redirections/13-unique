@@ -1,2 +1,2 @@
 #!/bin/bash
-grep -o -w -F -f <(sort) | sort | uniq -u
+sort | uniq -c | awk '$1 == 1 { print $2 }'
