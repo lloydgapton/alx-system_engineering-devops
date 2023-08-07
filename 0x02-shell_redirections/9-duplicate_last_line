@@ -1,2 +1,2 @@
 #!/bin/bash
-sed '$!d' iacta >> iacta
+{ cat iacta; tail -n 1 iacta; } > tmpfile && mv tmpfile iacta
