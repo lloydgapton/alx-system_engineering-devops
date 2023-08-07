@@ -1,2 +1,2 @@
 #!/bin/bash
-grep -o '\b\w+\b' | sort | uniq -u
+grep -o -w -F -f <(sort) | sort | uniq -u
