@@ -1,2 +1,2 @@
-#!/bin/bash
-grep -o -w -F -f <(sort) | sort | uniq -u
+#1/bin/bash
+echo $words | tr ' ' '\n' | sort | uniq -u
