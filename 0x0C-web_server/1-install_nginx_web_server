@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
-# install nginx server
-
-sudo apt-get update
-sudo apt-get -y install nginx
+#Install nginx on my 1730-web-01 server listening on port 80
+apt-get -y update
+apt-get -y install nginx
 echo "Hello World!" > /var/www/html/index.html
-sudo service nginx start
+service nginx start
