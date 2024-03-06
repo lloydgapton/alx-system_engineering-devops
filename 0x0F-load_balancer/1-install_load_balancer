@@ -1,26 +1,44 @@
 #!/usr/bin/env bash
-#installing and configuring HAProxy for load balancing
+# Installs HAProxy version 1.8 with the following configurations:
+#+    Enables management via the init script.
+#+    Distributes requests using a round-robin algorithm.
 
-sudo apt-get update
-sudo apt-get -y install --no-install-recommends software-properties-common
-sudo add-apt-repository ppa:vbernat/haproxy-2.4
-sudo apt-get -y install haproxy=2.4.\*
+apt-get install -y software-properties-common
+add-apt-repository -y ppa:vbernat/haproxy-1.8
+apt-get update
+apt-get install -y haproxy=1.8.\*
 
-musconfig=\
-"
-backend musoye-back
-        mode http
-        balance roundrobin
-        server 153875-web-01 100.26.142.48:80 check
-        server 153875-web-02 18.233.62.129:80 check
-frontend musoye-front
-        bind *:80
-        mode http
-        default_backend musoye-back
-"
-sudo echo "$musconfig" >> /etc/haproxy/haproxy.cfg
-if [ "$(pgrep -c haproxy)" -le 0 ]; then
-	sudo service haproxy start
-else
-	sudo sevice haproxy restart
-fi
+echo "ENABLED=1" >> /etc/default/haproxy
+mv /etc/haproxy/haproxy.cfg{,.original}
+touch /etc/haproxy/haproxy.cfg
+
+printf %s "global
+    log 127.0.0.1 local0 notice
+    maxconn 2000
+    user haproxy
+    group haproxy
+
+defaults
+    log     global
+    mode    http
+    option  httplog
+    option  dontlognull
+    retries 3
+    option redispatch
+    timeout connect  5000
+    timeout client  10000
+    timeout server  10000
+
+listen hbnb
+    bind 0.0.0.0:80
+    mode http
+    stats enable
+    stats uri /haproxy?stats
+    balance roundrobin
+    option httpclose
+    option forwardfor
+    server 375-web-01 104.196.168.90:80 check
+    server 375-web-02 35.196.46.172:80 check
+" >> /etc/haproxy/haproxy.cfg
+
+service haproxy start
