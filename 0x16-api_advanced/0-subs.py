@@ -1,17 +1,19 @@
 #!/usr/bin/python3
-"""get a lit of suscribber on a subreddit"""
+"""
+Reddit API
+"""
+import json
 import requests
+"""
+queries the Reddit API and returns the number of subscribers
+"""
 
 
 def number_of_subscribers(subreddit):
-    """number of suscribers"""
-    if subreddit is None or type(subreddit) != str:
-        return (0)
-    url = "http://www.reddit.com/r/{}/about.json".format(
-            subreddit)
-    headers = {'User-Agent': 'API project'}
-    response = requests.get(url, headers=headers)
-    if (response.status_code != 200):
-        return (0)
-    sus = response.json().get("data").get('subscribers', 0)
-    return (sus)
+    user = {"User-Agent": "Ons_sheckler"}
+    request = requests.get("https://www.reddit.com/r/{}/about.json"
+                           .format(subreddit), headers=user)
+    if request.status_code == 200:
+        return request.json().get("data").get("subscribers")
+    else:
+        return 0
